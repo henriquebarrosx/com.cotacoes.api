@@ -28,7 +28,18 @@ export function createRabbitMQFacade({ providers }: RabbitMQFacadeArgs): Message
                 }
 
                 catch (error) {
-                    logger.error("[RabbitMQFacade] Failed to establish a connection: ", error);
+                    if (!(error instanceof Error)) {
+                        logger.error("[RabbitMQFacade] Failed to establish connection: an unexpected error occurred");
+                        return;
+                    }
+
+                    if ('code' in error && error.code === 'ECONNREFUSED') {
+                        logger.error("[RabbitMQFacade] Connection failed: no RabbitMQ instance detected or unreachable");
+                        await reconnect();
+                        return;
+                    }
+
+                    logger.error("[RabbitMQFacade]", error.message);
                     await reconnect();
                 }
             }
