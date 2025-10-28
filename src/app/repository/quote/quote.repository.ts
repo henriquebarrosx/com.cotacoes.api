@@ -1,6 +1,8 @@
 import { eq, sql } from "drizzle-orm";
+
 import { quotesTable } from "../../../db/schema";
 import type { Quote } from "../../domain/entity/quote";
+import type { QuoteDTO } from "../../dto/quote/quote.dto";
 import type { CreateQuoteDTO } from "../../dto/quote/create_quote.dto";
 import type { Database, InMemoryDatabase } from "../../../infra/database/database";
 
@@ -52,9 +54,23 @@ export function createQuoteRepository({ providers }: QuoteRepositoryArgs): Quote
         return result ?? null;
     }
 
+    async function findAll(): Promise<QuoteDTO[]> {
+        const result = await database
+            .select()
+            .from(quotesTable)
+
+        const parsedData = result.map((quote) => {
+            const data = JSON.stringify(quote, (_, value) => typeof value === 'bigint' ? parseInt(value.toString()) : value);
+            return JSON.parse(data);
+        });
+
+        return parsedData;
+    }
+
     return {
-        findByPid,
         saveAll,
+        findAll,
+        findByPid,
     }
 }
 
@@ -65,6 +81,7 @@ type QuoteRepositoryArgs = {
 }
 
 export type QuoteRepository = {
+    findAll(): Promise<QuoteDTO[]>;
     findByPid(pid: string): Promise<Quote | null>;
     saveAll(quotes: CreateQuoteDTO[]): Promise<void>;
 }

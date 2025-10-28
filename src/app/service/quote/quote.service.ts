@@ -1,5 +1,6 @@
 import { mapRawToQuote } from "../../mapper/quote/quote.mapper";
 
+import type { QuoteDTO } from "../../dto/quote/quote.dto";
 import type { Logger } from "../../../infra/logger/logger";
 import type { RawQuoteDTO } from "../../dto/quote/raw_quote.dto";
 import type { QuoteRepository } from "../../repository/quote/quote.repository";
@@ -19,7 +20,14 @@ export function createQuoteService({ providers }: QuoteServiceArgs): QuoteServic
         await quoteHistoryService.insertInBatch(rawQuotes);
     }
 
+    async function getAllGroupedByCategory(): Promise<Partial<Record<string, QuoteDTO[]>>> {
+        const quotes = await quoteRepository.findAll();
+        const items = Object.groupBy(quotes, ({ category }) => category);
+        return items;
+    }
+
     return {
+        getAllGroupedByCategory,
         insertInBatch,
     }
 }
@@ -33,5 +41,6 @@ type QuoteServiceArgs = {
 }
 
 export type QuoteService = {
+    getAllGroupedByCategory(): Promise<Partial<Record<string, QuoteDTO[]>>>;
     insertInBatch(rawQuotes: RawQuoteDTO[]): Promise<void>;
 }

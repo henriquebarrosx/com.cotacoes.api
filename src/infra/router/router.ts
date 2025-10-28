@@ -10,3 +10,5 @@ type HttpBaseRoute = {
     PUT: (req: Bun.BunRequest) => Response | Promise<Response>;
     DELETE: (req: Bun.BunRequest) => Response | Promise<Response>;
 };
+
+export type HttpRequest = Bun.BunRequest
