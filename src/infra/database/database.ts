@@ -1,8 +1,8 @@
 import type { Pool } from 'pg';
 import { pushSchema } from 'drizzle-kit/api';
 import { PGlite } from '@electric-sql/pglite';
-import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { PgliteDatabase, drizzle as PgLiteDrizzle } from 'drizzle-orm/pglite';
+import { drizzle as PgDrizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 import { logger } from '../logger/main';
 import * as schemas from '../../db/schema';
@@ -10,27 +10,32 @@ import * as schemas from '../../db/schema';
 export function createDatabase(): Database {
     logger.info('[DatabaseConnection] Establishing database connection')
 
-    const database = drizzle(
+    const databaseURL = process.env.DATABASE_URL;
+    if (!databaseURL) throw new Error('Cannot establish database connection: url not defined');
+
+    const database = PgDrizzle(
         {
             connection: {
-                connectionString: process.env.DATABASE_URL,
+                connectionString: databaseURL,
                 ssl: false,
             }
         }
     );
 
-    logger.info('[DatabaseConnection] Database connection established')
+    logger.info('[DatabaseConnection] Database connection established');
     return database;
 }
 
 export async function createInMemoryDatabase(): Promise<InMemoryDatabase> {
-    const postgresDB = new PGlite();
-    const database: InMemoryDatabase = PgLiteDrizzle({ client: postgresDB });
-    await applyMigrationsFromInMemoryDatabase(database);
+    const postgresClient = new PGlite();
+    const database = PgLiteDrizzle({ client: postgresClient });
+
+    await applyMigrations(database);
+
     return database;
 }
 
-async function applyMigrationsFromInMemoryDatabase(database: InMemoryDatabase) {
+async function applyMigrations(database: InMemoryDatabase) {
     const { apply } = await pushSchema(schemas, database);
     await apply();
 }

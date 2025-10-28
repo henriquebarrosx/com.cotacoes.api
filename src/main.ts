@@ -4,8 +4,8 @@ import { messageBroker } from "./infra/message_broker/main";
 import { forexProsWorkerRunner } from "./app/worker/forex_pros_ws/main";
 
 /* CORE SERVICES */
-createHttpServer();
 await messageBroker.connect();
+createHttpServer();
 
 /* WORKERS */
 forexProsWorkerRunner.execute();

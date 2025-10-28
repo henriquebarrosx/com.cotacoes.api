@@ -1,4 +1,3 @@
-
-import { createDatabase } from './database';
+import { createDatabase } from "./database";
 
 export const database = createDatabase();

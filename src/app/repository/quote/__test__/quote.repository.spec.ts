@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it } from 'bun:test';
 
 import { baseQuote } from './quote.repository.spec.data';
 import type { CreateQuoteDTO } from '../../../dto/quote/create_quote.dto';
-import type { InMemoryDatabase } from '../../../../infra/database/database';
-import { createInMemoryDatabase } from '../../../../infra/database/database';
-import { createQuoteRepository, type QuoteRepository } from '../quote.repository';
+import type { InMemoryDatabase } from '../../../../infra/database/database.ts';
+import { createInMemoryDatabase } from '../../../../infra/database/database.ts';
+import { createQuoteRepository, type QuoteRepository } from '../quote.repository.ts';
 
 describe('QuoteRepository', () => {
     let db: InMemoryDatabase;
