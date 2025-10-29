@@ -1,8 +1,9 @@
-import { router } from "../router/main";
-import { logger } from "../logger/main";
+import { logger } from '../logger/main';
 
-export function createHttpServer() {
-    Bun.serve(
+export async function createHttpServer() {
+    const { router } = await import('../router/main');
+
+    const server = Bun.serve(
         {
             port: 3002,
             routes: router,
@@ -11,4 +12,6 @@ export function createHttpServer() {
     )
 
     logger.info('[HttpServer] Server running at port 3002')
+
+    return server;
 }

@@ -1,11 +1,12 @@
-import './infra/database/main';
+import { createDatabase } from './infra/database/main';
 import { createHttpServer } from "./infra/http_server/main";
 import { messageBroker } from "./infra/message_broker/main";
-import { forexProsWorkerRunner } from "./app/worker/forex_pros_ws/main";
 
-/* CORE SERVICES */
+export const database = createDatabase();
+export const server = await createHttpServer();
+
 await messageBroker.connect();
-createHttpServer();
 
-/* WORKERS */
+
+const { forexProsWorkerRunner } = await import('./app/worker/forex_pros_ws/main');
 forexProsWorkerRunner.execute();

@@ -1,4 +1,4 @@
-import { database } from "../../../infra/database/main";
+import { database } from "../../../main";
 import { createQuoteRepository } from "./quote.repository";
 
 export const quoteRepository = createQuoteRepository(
