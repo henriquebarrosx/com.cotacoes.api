@@ -15,11 +15,13 @@ export function createLogger(): Logger {
     )
 
     function info(message: string, ...args: unknown[]): void {
-        logger.info(`[Thread: ${threadId}] - ${message}`);
+        const extra = args.length ? ` ${args.join(' ')}` : '';
+        logger.info(`[Thread: ${threadId}] - ${message}${extra}`);
     }
 
     function error(message: string, ...args: unknown[]): void {
-        logger.error(`[Thread: ${threadId}] - ${message}`);
+        const extra = args.length ? ` ${args.join(' ')}` : '';
+        logger.error(`[Thread: ${threadId}] - ${message}${extra}`);
     }
 
     return {

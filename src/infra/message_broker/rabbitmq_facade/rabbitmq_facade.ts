@@ -33,7 +33,7 @@ export function createRabbitMQFacade({ providers }: RabbitMQFacadeArgs): Message
                         return;
                     }
 
-                    if ('code' in error && error.code === 'ECONNREFUSED') {
+                    if ('code' in error && (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND')) {
                         logger.error("[RabbitMQFacade] Connection failed: no RabbitMQ instance detected or unreachable");
                         await reconnect();
                         return;
