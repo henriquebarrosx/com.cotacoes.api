@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it } from 'bun:test';
 
 import { baseQuote } from './quote.history.spec.data.ts';
 import type { CreateQuoteDTO } from '../../../dto/quote/create_quote.dto.ts';
-import type { InMemoryDatabase } from '../../../../infra/database/database.ts';
-import { createInMemoryDatabase } from '../../../../infra/database/database.ts';
+import type { InMemoryDatabase } from '../../../../infra/database/main.ts';
+import { createInMemoryDatabase } from '../../../../infra/database/main.ts';
 import { createQuoteRepository, type QuoteRepository } from '../../quote/quote.repository.ts';
 import type { CreateQuoteHistoryDTO } from '../../../dto/quote_history/create_quote_history.dto.ts';
 import { createQuoteHistoryRepository, type QuoteHistoryRepository } from '../quote_history.repository.ts';
