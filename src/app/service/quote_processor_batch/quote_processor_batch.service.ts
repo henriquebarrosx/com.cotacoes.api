@@ -13,22 +13,22 @@ export function createQuoteProcessorBatchService({ providers }: QuoteProcessorBa
         /* Logic to broadcast the event and save quote */
 
         if (isProcessing) return;
+
+        isProcessing = true;
         scheduleBatchProcess();
     }
 
     function scheduleBatchProcess() {
-        isProcessing = true;
         setTimeout(() => processBatchMessages(), 10_000);
     }
 
     async function processBatchMessages() {
-        const messages = Array.from(queue.values());
-        const hasMessagesToBeSaved = messages.length;
-
-        queue = new Map();
+        const messages: RawQuoteDTO[] = Array.from(queue.values());
+        const hasMessagesToBeSaved: boolean = !!messages.length;
 
         if (hasMessagesToBeSaved) {
-            quoteService.insertInBatch(messages);
+            queue = new Map();
+            await quoteService.insertInBatch(messages);
         }
 
         isProcessing = false;
